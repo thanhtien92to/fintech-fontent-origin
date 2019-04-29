@@ -7,18 +7,13 @@ window.onload = function () {
     var mainPriceChart = document.getElementById("mainPriceChart");
     mainPriceChart.width = window.innerWidth * 0.8;
     mainPriceChart.height = window.innerHeight * 0.8;
-    var mainPriceChartContext = mainPriceChart.getContext("2d");
 
-    var priceChart = document.getElementById("priceChart");
-    priceChart.width = window.innerWidth * 0.8;
-    priceChart.height = window.innerHeight * 0.8;
-    var priceChartContext = mainPriceChart.getContext("2d");
+    var drawPriceChart = DrawPriceChart.getInstance();
+    drawPriceChart.initDrawObject(mainPriceChart,PricesDataBuffer.getInstance());
 
     var dataSocket = io("http://68.183.231.136:9000/", {
         autoConnect: true
     });
-
-    var pricesArray = [];
 
     dataSocket.on('connect', function () {
 
@@ -28,8 +23,7 @@ window.onload = function () {
             timestamp: timeStamp,
             distance: distance
         }, function (data) {
-            pricesArray = data.prices;
-            reDrawChart();
+            drawPriceChart.initPricesLines(data.prices);
         }
         )
         dataSocket.on("on_prices", function (data) {
@@ -38,32 +32,22 @@ window.onload = function () {
                 data.symbol == symbol
                 && data.type == type
             ) {
-                pricesArray.push(data);
-                reDrawChart();
+                drawPriceChart.addPriceSample(data);
             }
         })
     })
 
-    function reDrawChart() {
-        mainPriceChartContext.clearRect(0, 0, mainPriceChart.width, mainPriceChart.height);
-        mainPriceChartContext.fillStyle = "#f7f7f7"
-        mainPriceChartContext.fillRect(0, 0, mainPriceChart.width, mainPriceChart.height);
+    window.addEventListener('mousemove', showPriceTimeValue, false);
 
-        var arrayTimeAxis = PricesTimeUtils.getTimeArrayAxis(pricesArray);
-        var arrayPricesAxis = PricesTimeUtils.getPricesArrayAxis(pricesArray);
-        CanvasUtils.drawAxis(mainPriceChartContext, {
-            canvWidth: mainPriceChart.width,
-            canvHeight: mainPriceChart.height,
-            timeAxis: arrayTimeAxis,
-            pricesAxis: arrayPricesAxis
-        })
-
-        CanvasUtils.drawPricesLine(mainPriceChartContext, {
-            canvWidth: mainPriceChart.width,
-            canvHeight: mainPriceChart.height,
-            timeAxis: arrayTimeAxis,
-            pricesAxis: arrayPricesAxis,
-            pricesArray: pricesArray
-        })
+    function showPriceTimeValue(event){
+        var pos = getMousePos(mainPriceChart,event);
+        drawPriceChart.drawPriceTimeValue(pos);
+    }
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+            y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+        };
     }
 }
