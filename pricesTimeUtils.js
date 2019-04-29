@@ -66,7 +66,9 @@ PricesTimeUtils.minMaxTime = function(pricesArray){
     }
 }
 
-PricesTimeUtils.getTimeArrayAxis = function(pricesArray,timeStep = 2, timeUnit = "minute", nStep = 17){
+PricesTimeUtils.getTimeArrayAxis = function(pricesArray,timeStep, timeUnit, nStep){
+    timeStep = 2;
+    nStep = 17;
     var minMaxTime = PricesTimeUtils.minMaxTime(pricesArray);
     var endPrice = minMaxTime.maxPrice.val;
     var endTimeStamp = endPrice.timestamp;
