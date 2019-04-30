@@ -45,7 +45,8 @@ CanvasUtils.drawArrayLines = function (_canvasContext, arrayLines) {
     }
 }
 
-CanvasUtils.drawConnectedArrayLines = function (_canvasContext, arrayLines) {
+CanvasUtils.drawConnectedArrayLines = function (canvas, arrayLines) {
+    var _canvasContext = canvas.getContext("2d");
     var len = arrayLines.length;
     for (var i = 0; i < len - 1; i++) {
         CanvasUtils.drawLine(_canvasContext,{
@@ -57,6 +58,15 @@ CanvasUtils.drawConnectedArrayLines = function (_canvasContext, arrayLines) {
             endY: arrayLines[i + 1].y,
         });
     }
+    _canvasContext.beginPath();
+    _canvasContext.fillStyle = "#77797e87"
+    _canvasContext.moveTo(arrayLines[len-1].x,canvas.height-60);
+    _canvasContext.lineTo(arrayLines[0].x,canvas.height-60);
+    for(var i = 0; i < len; i++){
+        _canvasContext.lineTo(arrayLines[i].x,arrayLines[i].y);
+    }
+    _canvasContext.closePath();
+    _canvasContext.fill();
 }
 
 CanvasUtils.clearCanvasObject = function(canvas){

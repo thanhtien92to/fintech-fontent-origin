@@ -28,7 +28,7 @@ var DrawPriceChart = function(){
         CanvasUtils.drawArrayLines(this.canvasObject.getContext("2d"),this.pricesDataBuffer.drawnTableLines);
         CanvasUtils.drawArrayTexts(this.canvasObject.getContext("2d"),this.pricesDataBuffer.drawnTimeAxis);
         CanvasUtils.drawArrayTexts(this.canvasObject.getContext("2d"),this.pricesDataBuffer.drawnPricesAxis);
-        CanvasUtils.drawConnectedArrayLines(this.canvasObject.getContext("2d"),this.pricesDataBuffer.drawnPricesLine);
+        CanvasUtils.drawConnectedArrayLines(this.canvasObject,this.pricesDataBuffer.drawnPricesLine);
         if(this.currentMouseValue!=null){
             CanvasUtils.drawLine(this.canvasObject.getContext("2d"),{
                 strokeStyle: "#797e87",
